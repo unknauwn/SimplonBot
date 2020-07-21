@@ -1,4 +1,4 @@
-import nest_asyncio
+#import nest_asyncio
 #import asyncio
 import discord
 from discord.ext import commands
@@ -7,7 +7,7 @@ import os
 #from dotenv import load_dotenv
 import random
 
-nest_asyncio.apply()
+#nest_asyncio.apply()
 #load_dotenv()
 
 bot = commands.Bot(command_prefix='!')

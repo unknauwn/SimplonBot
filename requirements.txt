@@ -1,5 +1,2 @@
 discord
-nest_asyncio
-commands
-CommandNotFound
 random
