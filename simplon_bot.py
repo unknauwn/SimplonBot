@@ -21,7 +21,7 @@ bot = commands.Bot(command_prefix='!')
 @bot.command(name='roll_places')
 async def random_places(ctx):
     members = list(ctx.guild.members)
-    shuffle(members)
+    random.shuffle(members)
     embedVar = discord.Embed(title="Emplacements des Apprenants:", description="Tirage aux sort des places pour chaque apprenants", url=f"https://simplonline.co", color=0xdf0000)
     embedVar.set_author(name="Simplon'Bot", icon_url=ctx.guild.icon_url)
     embedVar.add_field(name="__Apprenants:__", value=RandomStudentsPlaces(members), inline=True)
