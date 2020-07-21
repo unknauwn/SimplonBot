@@ -79,7 +79,7 @@ def RandomStudentsPlaces(students):
     ":two::one:", ":two::two:", ":two::three:", ":two::four:", ":two::five:", ":two::six:", ":two::seven:", ":two::eight", ":two::nine:", ":three::three:"]
     for student in range(len(students)):
         name = students[student].name if not students[student].nick else students[student].nick
-        New_Students += Emo_Number[student]+' : **'+name+'**\n'
+        New_Students += Emo_Number[student+1]+' : **'+name+'**\n'
     return New_Students
 
 
