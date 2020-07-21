@@ -1,13 +1,14 @@
 import nest_asyncio
-import asyncio
+#import asyncio
 import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
-from dotenv import load_dotenv
-from random import shuffle
+import os
+#from dotenv import load_dotenv
+import random
 
 nest_asyncio.apply()
-load_dotenv()
+#load_dotenv()
 
 TOKEN = 'NzM0NjY1Njc3OTM1MzQ1Njc0.XxVBWg.J1SVUphf_pyfIQ33PXyTsCb9O_Y'
 
@@ -18,14 +19,28 @@ bot = commands.Bot(command_prefix='!')
     #DoSomething
 
 
-##Commande du bot qui lance la génération aléatoire
-@bot.command(name='init_places')
-async def random(ctx):
+##Commande du bot qui lance la génération aléatoire des places pour chaque apprenant
+@bot.command(name='roll_places')
+async def random_places(ctx):
     members = list(ctx.guild.members)
     shuffle(members)
-    embedVar = discord.Embed(title="Emplacements des Apprenants:", description="Tirage aux sorts des places pour chaque Apprenants", url=f"https://simplonline.co", color=0xdf0000)
+    embedVar = discord.Embed(title="Emplacements des Apprenants:", description="Tirage aux sort des places pour chaque apprenants", url=f"https://simplonline.co", color=0xdf0000)
     embedVar.set_author(name="Simplon'Bot", icon_url=ctx.guild.icon_url)
-    embedVar.add_field(name="students_data", value=RandomStudent(members), inline=True)
+    embedVar.add_field(name="__Apprenants:__", value=RandomStudentsPlaces(members), inline=True)
+    embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
+    embedVar.set_footer(text="Simplon Cannes DevData#1")
+    await ctx.channel.send(embed=embedVar)
+    await ctx.message.delete()
+
+##Commande du bot qui lance la génération aléatoire d'un apprenant
+@bot.command(name='roll_app')
+async def random_studend(ctx):
+    students = getStudents(list(ctx.guild.members))
+    random_student = random.choice(students)
+    student_name = random_student.name if not random_student.nick else random_student.nick
+    embedVar = discord.Embed(title="Emplacements des Apprenants:", description="Tirage aux sort d'un apprenant", url=f"https://simplonline.co", color=0xdf0000)
+    embedVar.set_author(name="Simplon'Bot", icon_url=ctx.guild.icon_url)
+    embedVar.add_field(name="__Apprenant Séléctionné:__", value="**"+student_name+"**", inline=True)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
     embedVar.set_footer(text="Simplon Cannes DevData#1")
     await ctx.channel.send(embed=embedVar)
@@ -46,7 +61,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    await bot.change_presence(activity=discord.Game(name="#In Code We Trust"))
+    await bot.change_presence(activity=discord.Game(name="#In Code We Trust(!aide)"))
 
 ##Retourne uniquement les liste des Apprenants par leur Roles
 def getStudents(students):
@@ -58,7 +73,7 @@ def getStudents(students):
     return students_
 
 ##Retourne une liste mélangé d'apprenants trié par ordre croissant avec affichage du N°
-def RandomStudent(students):
+def RandomStudentsPlaces(students):
     students = getStudents(students)
     New_Students='';
     Emo_Number = [":zero:", ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:",
@@ -66,9 +81,9 @@ def RandomStudent(students):
     ":two::one:", ":two::two:", ":two::three:", ":two::four:", ":two::five:", ":two::six:", ":two::seven:", ":two::eight", ":two::nine:", ":three::three:"]
     for student in range(len(students)):
         name = students[student].name if not students[student].nick else students[student].nick
-        New_Students += Emo_Number[student]+" : "+name+'\n'
+        New_Students += Emo_Number[student]+' : **'+name+'**\n'
     return New_Students
 
 
 
-bot.run(TOKEN)
+bot.run(os.environ['token'])
