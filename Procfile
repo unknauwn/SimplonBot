@@ -1,1 +1,1 @@
-worker = python simplon_bot.py
+worker: python simplon_bot.py
