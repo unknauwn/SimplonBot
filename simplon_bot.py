@@ -10,8 +10,6 @@ import random
 nest_asyncio.apply()
 #load_dotenv()
 
-TOKEN = 'NzM0NjY1Njc3OTM1MzQ1Njc0.XxVBWg.J1SVUphf_pyfIQ33PXyTsCb9O_Y'
-
 bot = commands.Bot(command_prefix='!')
 
 #@bot.command(name='test')
