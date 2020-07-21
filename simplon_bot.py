@@ -1,12 +1,12 @@
-#import nest_asyncio
-#import asyncio
 import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 import os
-#from dotenv import load_dotenv
 import random
-
+#Utiliser pour les tests en local
+#import nest_asyncio
+#import asyncio
+#from dotenv import load_dotenv
 #nest_asyncio.apply()
 #load_dotenv()
 
@@ -16,6 +16,17 @@ bot = commands.Bot(command_prefix='!')
 #async def test(ctx):
     #DoSomething
 
+##Commande du bot qui affiche l'aide(les commandes)
+@bot.command(name='aide')
+async def aide(ctx):
+    bot_cmd = '**!roll_places** - Génère les places de chaque apprenant aléatoirement.\n**!roll_app** - Génère **UN** apprenant aléatoirement'
+    embedVar = discord.Embed(title="Aide Bot Simplon:", description="Affichage des commandes pour l'utilisation du Bot Simplon", url=f"https://simplonline.co", color=0xdf0000)
+    embedVar.set_author(name="Simplon'Bot", icon_url=ctx.guild.icon_url)
+    embedVar.add_field(name="__Commandes:__", value=bot_cmd, inline=True)
+    embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
+    embedVar.set_footer(text="Simplon Cannes DevData#1")
+    await ctx.channel.send(embed=embedVar)
+    await ctx.message.delete()
 
 ##Commande du bot qui lance la génération aléatoire des places pour chaque apprenant
 @bot.command(name='roll_places')
