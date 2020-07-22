@@ -1,3 +1,7 @@
+#Discord Simplon Bot
+#Author: LESOEUR RAPHAEL 06
+#Language: Python
+
 import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
@@ -24,7 +28,7 @@ async def aide(ctx):
     embedVar.set_author(name="Simplon'Bot", icon_url=ctx.guild.icon_url)
     embedVar.add_field(name="__Commandes:__", value=bot_cmd, inline=True)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
-    embedVar.set_footer(text="Simplon Cannes DevData#1")
+    embedVar.set_footer(text="Simplon")
     await ctx.channel.send(embed=embedVar)
     await ctx.message.delete()
 
@@ -37,7 +41,7 @@ async def random_places(ctx):
     embedVar.set_author(name="Simplon'Bot", icon_url=ctx.guild.icon_url)
     embedVar.add_field(name="__Apprenants:__", value=RandomStudentsPlaces(members), inline=True)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
-    embedVar.set_footer(text="Simplon Cannes DevData#1")
+    embedVar.set_footer(text="Simplon")
     await ctx.channel.send(embed=embedVar)
     await ctx.message.delete()
 
@@ -86,8 +90,8 @@ def RandomStudentsPlaces(students):
     students = getStudents(students)
     New_Students='';
     Emo_Number = [":zero:", ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:",
-    ":one::one:", ":one::two:", ":one::three:", ":one::four:", ":one::five:", ":one::six:", ":one::seven:", ":one::eight:", ":one::nine:",
-    ":two::one:", ":two::two:", ":two::three:", ":two::four:", ":two::five:", ":two::six:", ":two::seven:", ":two::eight", ":two::nine:", ":three::three:"]
+    ":one::zero:", ":one::two:", ":one::three:", ":one::four:", ":one::five:", ":one::six:", ":one::seven:", ":one::eight:", ":one::nine:",
+    ":two::zero:", ":two::one:", ":two::two:", ":two::three:", ":two::four:", ":two::five:", ":two::six:", ":two::seven:", ":two::eight", ":two::nine:", ":three::three:"]
     for student in range(len(students)):
         name = students[student].name if not students[student].nick else students[student].nick
         New_Students += Emo_Number[student+1]+' : **'+name+'**\n'
