@@ -90,8 +90,10 @@ def RandomStudentsPlaces(students):
     students = getStudents(students)
     New_Students='';
     Emo_Number = [":zero:", ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:",
-    ":one::zero:", ":one::two:", ":one::three:", ":one::four:", ":one::five:", ":one::six:", ":one::seven:", ":one::eight:", ":one::nine:",
-    ":two::zero:", ":two::one:", ":two::two:", ":two::three:", ":two::four:", ":two::five:", ":two::six:", ":two::seven:", ":two::eight", ":two::nine:", ":three::three:"]
+    ":one::zero:", ":one::one:", ":one::two:", ":one::three:", ":one::four:", ":one::five:", ":one::six:", ":one::seven:", ":one::eight:", ":one::nine:",
+    ":two::zero:", ":two::one:", ":two::two:", ":two::three:", ":two::four:", ":two::five:", ":two::six:", ":two::seven:", ":two::eight", ":two::nine:",
+    ":three::zero:", ":three::one:", ":three::two:", ":three::three:", ":three::four:", ":three::five:", ":three::six:", ":three::seven:", ":three::eight", ":three::nine:",
+    ":four::zero:", ":four::one:", ":four::two:", ":four::three:", ":four::four:", ":four::five:", ":four::six:", ":four::seven:", ":four::eight", ":four::nine:", ":five::five:"]
     for student in range(len(students)):
         name = students[student].name if not students[student].nick else students[student].nick
         New_Students += Emo_Number[student+1]+' : **'+name+'**\n'
