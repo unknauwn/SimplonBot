@@ -1,5 +1,7 @@
 #Discord Simplon Bot
-#Author: RAPHAEL.L 06
+#Author: RAPHAEL.L
+#Fabrique: Cannes 06
+#Formation: Dev Data#1
 #Language: Python
 
 import discord
@@ -37,11 +39,11 @@ async def aide(ctx):
 async def random_places(ctx):
     members = list(ctx.guild.members)
     random.shuffle(members)
-    embedVar = discord.Embed(title="Emplacements des Apprenants:", description="Tirage aux sort des places pour chaque apprenants", url=f"https://simplonline.co", color=0xdf0000)
-    embedVar.set_author(name="Simplon'Bot", icon_url=ctx.guild.icon_url)
+    embedVar = discord.Embed(title="Emplacements des Apprenants:", description="Tirage aux sort des places pour chaque apprenant", url=f"https://simplonline.co", color=0xdf0000)
+    embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
     embedVar.add_field(name="__Apprenants:__", value=RandomStudentsPlaces(members), inline=True)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
-    embedVar.set_footer(text="Simplon")
+    embedVar.set_footer(text="Simplon#InCodeWeTrust")
     await ctx.channel.send(embed=embedVar)
     await ctx.message.delete()
 
@@ -55,7 +57,7 @@ async def random_studend(ctx):
     embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
     embedVar.add_field(name="__Apprenant Séléctionné:__", value="**"+student_name+"**", inline=True)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
-    embedVar.set_footer(text="Simplon Cannes DevData#1")
+    embedVar.set_footer(text="Simplon#InCodeWeTrust")
     await ctx.channel.send(embed=embedVar)
     await ctx.message.delete()
 
