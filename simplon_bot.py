@@ -4,62 +4,132 @@
 #Formation: Dev Data#1
 #Language: Python
 
-import discord
+import discord, os, random, emoji, nest_asyncio, asyncio, simplon_lib as sl, google_query
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
-import os
-import random
-#Utiliser pour les tests en local
-#import nest_asyncio
-#import asyncio
-#from dotenv import load_dotenv
-#nest_asyncio.apply()
-#load_dotenv()
 
 bot = commands.Bot(command_prefix='!')
-
-#@bot.command(name='test')
-#async def test(ctx):
-    #DoSomething
+footer_embed = ':link: [Rejoingnez le Projet!](https://discord.gg/zgKJwGh) | Simplon#InCodeWeTrust'
 
 ##Commande du bot qui affiche l'aide(les commandes)
 @bot.command(name='aide')
 async def aide(ctx):
-    bot_cmd = '**!roll_places** - Génère les places de chaque apprenant aléatoirement.\n**!roll_app** - Génère **UN** apprenant aléatoirement'
+    bot_cmd = ('**!s_veille "RECHERCHE"** - Affiche les 5 premiers lien en rapport avec la recherche demandé\n'
+    '**!s_sondage "TITRE" "DESCRIPTION(optionnel)" "EMOJI(optionnel)"** - Créer un sondage avec le titre, la description & les emoji choisi\n'
+    '**!_places** - Génère les places de chaque apprenant aléatoirement.\n'
+    '**!s_app** - Génère **UN** apprenant aléatoirement')
     embedVar = discord.Embed(title="Aide Bot Simplon:", description="Affichage des commandes pour l'utilisation du Bot Simplon", url=f"https://simplonline.co", color=0xdf0000)
     embedVar.set_author(name="Simplon'Bot", icon_url=ctx.guild.icon_url)
-    embedVar.add_field(name="__Commandes:__", value=bot_cmd, inline=True)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
-    embedVar.set_footer(text="Simplon")
+    embedVar.add_field(name="__Commandes:__", value=bot_cmd, inline=False)
+    embedVar.add_field(name="\u200b", value=footer_embed, inline=False)
+    embedVar.set_footer(text="developped by R.L. / Simplon 2020")
     await ctx.channel.send(embed=embedVar)
     await ctx.message.delete()
 
 ##Commande du bot qui lance la génération aléatoire des places pour chaque apprenant
-@bot.command(name='roll_places')
+@bot.command(name='s_places')
 async def random_places(ctx):
     members = list(ctx.guild.members)
     random.shuffle(members)
     embedVar = discord.Embed(title="Emplacements des Apprenants:", description="Tirage aux sort des places pour chaque apprenant", url=f"https://simplonline.co", color=0xdf0000)
     embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
-    embedVar.add_field(name="__Apprenants:__", value=RandomStudentsPlaces(members), inline=True)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
-    embedVar.set_footer(text="Simplon#InCodeWeTrust")
+    embedVar.add_field(name="__Apprenants:__", value=sl.RandomStudentsPlaces(members), inline=False)
+    embedVar.add_field(name="** **", value=footer_embed, inline=False)
+    embedVar.set_footer(text="developped by R.L. / Simplon 2020")
     await ctx.channel.send(embed=embedVar)
     await ctx.message.delete()
 
 ##Commande du bot qui lance la génération aléatoire d'un apprenant
-@bot.command(name='roll_app')
-async def random_studend(ctx):
-    students = getStudents(list(ctx.guild.members))
+@bot.command(name='s_app')
+async def random_student(ctx):
+    students = sl.getStudents(list(ctx.guild.members))
     random_student = random.choice(students)
     student_name = random_student.name if not random_student.nick else random_student.nick
-    embedVar = discord.Embed(title="Emplacements des Apprenants:", description="Tirage aux sort d'un apprenant", url=f"https://simplonline.co", color=0xdf0000)
+    embedVar = discord.Embed(title="Apprenants Aléatoire:", description="Tirage aux sort d'un apprenant", url=f"https://simplonline.co", color=0xdf0000)
     embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
-    embedVar.add_field(name="__Apprenant Séléctionné:__", value="**"+student_name+"**", inline=True)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
-    embedVar.set_footer(text="Simplon#InCodeWeTrust")
+    embedVar.add_field(name="__Apprenant Séléctionné:__", value="**"+student_name+"**", inline=False)
+    embedVar.add_field(name="** **", value=footer_embed, inline=False)
+    embedVar.set_footer(text="developped by R.L. / Simplon 2020")
     await ctx.channel.send(embed=embedVar)
     await ctx.message.delete()
+
+##Commande du bot pour faire une recherche rapide sur un sujet de veille demandé
+@bot.command(name='s_veille')
+async def test(ctx, keyword):
+    waiting_msg = await ctx.send("Recherche en cour... :face_with_monocle: ["+keyword+"]")
+    embedVar = discord.Embed(title="Sujet de veille: \""+keyword+"\"", description="Recherche rapide des liens en rapport avec le sujet de Veille", url=f"https://simplonline.co", color=0xdf0000)
+    embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
+    embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
+    embedVar.add_field(name="__Liens trouvés:__", value="**"+google_query.googleQuery(keyword)+"**", inline=False)
+    embedVar.add_field(name="** **", value=footer_embed, inline=False)
+    embedVar.set_footer(text="developped by R.L. / Simplon 2020")
+    await waiting_msg.delete()
+    await ctx.channel.send(embed=embedVar)
+    await ctx.message.delete()
+
+##Commande du bot pour lancé un nouveau Sondage avec parametre (Question, Smileys, Temps en Heure)
+@bot.command(name='s_sondage')
+async def sondage(ctx, question=None, description="Sondage", reactions='✅❌'):
+    reactions = ''.join(c for c in reactions if c in emoji.UNICODE_EMOJI)
+    if question == None:
+        await ctx.send("Vous devez donner un intitulé a votre sondage.")
+        return
+    if not reactions:
+        await ctx.send("Emoji's invalide.")
+        return
+    if len(reactions) > 10:
+        await ctx.send("Le nombre maximal d'Emoji est limité a 10.")
+        return
+    await ctx.message.delete()
+    dateYMD = await sl.checkDateTime(bot, ctx, True)
+    dateHMS = await sl.checkDateTime(bot, ctx, False, True)
+    timerExpire = await sl.isDateExpired(dateYMD+' '+dateHMS)
+    if (True if timerExpire < 0 else False):
+        await ctx.send(":x: La Date est expiré. Veuillez saisir une date valide.")
+        dateYMD = await sl.checkDateTime(bot, ctx, True)
+        dateHMS = await sl.checkDateTime(bot, ctx, False, True)
+
+    async def getReactUsers(init=False):
+        updateEmbedVar = discord.Embed(title="**"+question+"**", description=description, url=f"https://simplonline.co", color=0xdf0000)
+        updateEmbedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        updateEmbedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
+        if not init:
+            cache_msg = discord.utils.get(bot.cached_messages, id=react_message.id)
+            for reaction in cache_msg.reactions:
+                userLst = "\u200b"
+                async for user in reaction.users():
+                    if user.bot == False:
+                        userLst += ("<@"+str(user.id)+">\n")
+                if reaction.emoji in reactions:
+                    updateEmbedVar.add_field(name="Votes **"+reaction.emoji+"** ("+str(userLst.count("\n"))+")", value=userLst, inline=True)
+        updateEmbedVar.add_field(name="** **", value=footer_embed, inline=False)
+        updateEmbedVar.set_footer(text="developped by R.L. / Simplon 2020 | Le sondage sera cloturé le {0}.".format(dateYMD+' à '+dateHMS))
+        return updateEmbedVar
+
+    react_message = await ctx.send(embed=await getReactUsers(True))
+    for reaction in reactions:
+        await react_message.add_reaction(reaction)
+    await react_message.edit(embed=await getReactUsers())
+
+    def checkReact(reaction, user):
+      return user.bot == False and str(reaction.emoji) in reactions
+
+    pollOpen = True
+    while pollOpen == True:
+        try:
+            pending_tasks = [bot.wait_for('reaction_add', timeout=timerExpire,check=checkReact), bot.wait_for('reaction_remove', timeout=timerExpire,check=checkReact)]
+            done_tasks, pending_tasks = await asyncio.wait(pending_tasks, return_when=asyncio.FIRST_COMPLETED)
+
+            for task in done_tasks:
+                reaction, user = await task
+                await react_message.edit(embed=await getReactUsers())
+        except asyncio.TimeoutError:
+           # await ctx.send('Poll fermé!')
+           pollOpen = False
+
 
 
 ##Si la commande entré par l'utilisateur n'existe pas, on anticipe l'erreur
@@ -67,7 +137,7 @@ async def random_studend(ctx):
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         return
-    raise error
+    print(error)
 
 ##Event Log de l'execution du Bot
 @bot.event
@@ -77,35 +147,5 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     await bot.change_presence(activity=discord.Game(name="#In Code We Trust(!aide)"))
-
-##Retourne uniquement les liste des Apprenants par leur Roles
-def getStudents(students):
-    students_ = []
-    for student in students:
-        for role in student.roles:
-            if role.name in ["Admin_Test", "Apprenants"]:
-                students_.append(student)
-    return students_
-
-##Retourne une liste mélangé d'apprenants trié par ordre croissant avec affichage du N°
-def RandomStudentsPlaces(students):
-    students = getStudents(students)
-    New_Students='';
-    for student in range(len(students)):
-        name = students[student].name if not students[student].nick else students[student].nick
-        New_Students += getEmojiByIndex(student+1)+' : **'+name+'**\n'
-    return New_Students
-
-##Retourne la position (int) avec des emoji numeric de manière dynamique
-def getEmojiByIndex(index):
-    Emo_Number = [":zero:", ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:"]
-    number = ''
-    if index <10:
-        number = Emo_Number[0]+Emo_Number[index]
-    else:
-        for num in map(int, str(index)):
-            number += Emo_Number[num]
-    return number
-
 
 bot.run(os.environ['token'])
