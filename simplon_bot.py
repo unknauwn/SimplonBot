@@ -15,7 +15,7 @@ footer_embed = ':link: [Rejoingnez le Projet!](https://discord.gg/zgKJwGh) | Sim
 @bot.command(name='aide')
 async def aide(ctx):
     bot_cmd = ('**!s_veille "RECHERCHE"** - Affiche les 5 premiers lien en rapport avec la recherche demandé\n'
-    '**!s_sondage "TITRE" "DESCRIPTION(optionnel)" "EMOJI(optionnel)"** - Créer un sondage avec le titre, la description & les emoji choisi\n'
+    '**!s_sondage "TITRE" "DESCRIPTION"** *(optionnel)* **"EMOJI"** *(optionnel)* **"OUI/NON"** *(optionnel, empeche les utilisateurs d\'ajouter de nouveaux Emoji)* - Créer un sondage avec le titre, la description & les emoji choisi\n'
     '**!s_places** - Génère les places de chaque apprenant aléatoirement.\n'
     '**!s_app** - Génère **UN** apprenant aléatoirement')
     embedVar = discord.Embed(title="Aide Bot Simplon:", description="Affichage des commandes pour l'utilisation du Bot Simplon", url=f"https://simplonline.co", color=0xdf0000)
