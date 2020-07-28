@@ -75,25 +75,26 @@ async def test(ctx, keyword):
 async def sondage(ctx, question=None, description="Sondage", reactions='✅❌'):
     reactions = ''.join(c for c in reactions if c in emoji.UNICODE_EMOJI)
     if question == None:
-        await ctx.send("Vous devez donner un intitulé a votre sondage.")
+        await ctx.author.send("Vous devez donner un intitulé a votre sondage.")
         return
     if not reactions:
-        await ctx.send("Emoji's invalide.")
+        await ctx.author.send("Emoji's invalide.(Utilser jusqu'a 10 emoji entre guillemets, ex: ✅❌)")
         return
     if len(reactions) > 10:
-        await ctx.send("Le nombre maximal d'Emoji est limité a 10.")
+        await ctx.author.send("Le nombre maximal d'Emoji est limité a 10.")
         return
     await ctx.message.delete()
     dateYMD = await sl.checkDateTime(bot, ctx, True)
     dateHMS = await sl.checkDateTime(bot, ctx, False, True)
     timerExpire = await sl.isDateExpired(dateYMD+' '+dateHMS)
     if (True if timerExpire < 0 else False):
-        await ctx.send(":x: La Date est expiré. Veuillez saisir une date valide.")
+        await ctx.auhor.send(":x: La Date est expiré. Veuillez saisir une date valide.")
         dateYMD = await sl.checkDateTime(bot, ctx, True)
         dateHMS = await sl.checkDateTime(bot, ctx, False, True)
 
     async def getReactUsers(init=False):
-        updateEmbedVar = discord.Embed(title="**"+question+"**", description=description, url=f"https://simplonline.co", color=0xdf0000)
+        author_name = ctx.message.author.name if not ctx.message.author.nick else ctx.message.author.nick
+        updateEmbedVar = discord.Embed(title="**"+question+"**", description=description+"\nAuteur: "+ author_name, url=f"https://simplonline.co", color=0xdf0000)
         updateEmbedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
         updateEmbedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
         if not init:
