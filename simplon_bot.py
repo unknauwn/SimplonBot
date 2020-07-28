@@ -72,18 +72,21 @@ async def test(ctx, keyword):
 
 ##Commande du bot pour lancé un nouveau Sondage avec parametre (Question, Smileys, Temps en Heure)
 @bot.command(name='s_sondage')
-async def sondage(ctx, question=None, description="Sondage", reactions='✅❌'):
-    reactions = ''.join(c for c in reactions if c in emoji.UNICODE_EMOJI)
+async def sondage(ctx, question=None, description="Sondage", react='', limitReact="NON"):
+    reactions = ''.join(c for c in react if c in emoji.UNICODE_EMOJI)
     if question == None:
         await ctx.author.send("Vous devez donner un intitulé a votre sondage.")
         return
-    if not reactions:
+    if not reactions and limitReact.upper() == "OUI":
         await ctx.author.send("Emoji's invalide.(Utilser jusqu'a 10 emoji entre guillemets, ex: ✅❌)")
         return
     if len(reactions) > 10:
         await ctx.author.send("Le nombre maximal d'Emoji est limité a 10.")
         return
+    if(len(reactions) != len(react)):
+        await ctx.author.send("Certains emojis séléctionnés ne sont pas compatible, elles n'apparaitrons pas.\nSi vous n'avez pas activé la limitation d'Emoji vous pouvez la rajouter manuellement après la création du Sondage.")
     await ctx.message.delete()
+
     dateYMD = await sl.checkDateTime(bot, ctx, True)
     dateHMS = await sl.checkDateTime(bot, ctx, False, True)
     timerExpire = await sl.isDateExpired(dateYMD+' '+dateHMS)
@@ -104,7 +107,7 @@ async def sondage(ctx, question=None, description="Sondage", reactions='✅❌')
                 async for user in reaction.users():
                     if user.bot == False:
                         userLst += ("<@"+str(user.id)+">\n")
-                if reaction.emoji in reactions:
+                if reaction.emoji in reactions or limitReact.upper() == "NON":
                     updateEmbedVar.add_field(name="Votes **"+reaction.emoji+"** ("+str(userLst.count("\n"))+")", value=userLst, inline=True)
         updateEmbedVar.add_field(name="** **", value=footer_embed, inline=False)
         updateEmbedVar.set_footer(text="developped by R.L. / Simplon 2020 | Le sondage sera cloturé le {0}.".format(dateYMD+' à '+dateHMS))
@@ -116,7 +119,7 @@ async def sondage(ctx, question=None, description="Sondage", reactions='✅❌')
     await react_message.edit(embed=await getReactUsers())
 
     def checkReact(reaction, user):
-      return user.bot == False and str(reaction.emoji) in reactions
+      return user.bot == False and (str(reaction.emoji) in reactions or limitReact.upper() == "NON")
 
     pollOpen = True
     while pollOpen == True:
