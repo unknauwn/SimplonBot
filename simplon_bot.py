@@ -72,18 +72,18 @@ async def veille(ctx, keyword):
 
 ##Commande du bot pour lancé un nouveau Sondage avec parametre (Question, Smileys, Temps en Heure)
 @bot.command(name='s_sondage')
-async def sondage(ctx, question=None, description="Sondage", react='', limitReact="NON"):
+async def sondage(ctx, question=None, description="Sondage", react='', limitReact="non"):
     reactions = ''.join(c for c in react if c in emoji.UNICODE_EMOJI)
     if question == None:
         await ctx.author.send("Vous devez donner un intitulé a votre sondage.")
         return
-    if not reactions and limitReact.upper() == "OUI":
+    if not reactions and limitReact.lower() == "oui":
         await ctx.author.send("Emoji's invalide.(Utilser jusqu'a 10 emoji entre guillemets, ex: ✅❌)")
         return
     if len(reactions) > 10:
         await ctx.author.send("Le nombre maximal d'Emoji est limité a 10.")
         return
-    if(len(reactions) != len(react)):
+    if(len(reactions) != len(react.replace(' ',''))):
         await ctx.author.send("Certains emojis séléctionnés ne sont pas compatible, elles n'apparaitrons pas.\nSi vous n'avez pas activé la limitation d'Emoji vous pouvez la rajouter manuellement après la création du Sondage.")
     await ctx.message.delete()
 
@@ -92,7 +92,7 @@ async def sondage(ctx, question=None, description="Sondage", react='', limitReac
     dateHMS = await sl.checkDateTime(bot, ctx, False, True)
     timerExpire = await sl.isDateExpired(dateYMD+' '+dateHMS)
     if (True if timerExpire < 0 else False):
-        await ctx.auhor.send(":x: La Date est expiré. Veuillez saisir une date valide.")
+        await ctx.author.send(":x: La Date est expiré. Veuillez saisir une date valide.")
         dateYMD = await sl.checkDateTime(bot, ctx, True)
         dateHMS = await sl.checkDateTime(bot, ctx, False, True)
 
@@ -124,7 +124,7 @@ async def sondage(ctx, question=None, description="Sondage", react='', limitReac
             usersLst = "\u200b"
             users = await reaction.users().flatten()
             usersLst += '\n'.join(["<@"+str(u.id)+">\n" for u in users if not u.bot])
-            if reaction.emoji in reactions or limitReact.upper() == "NON":
+            if reaction.emoji in reactions or limitReact.lower() == "non":
                 updateEmbedVar.add_field(name=reaction.emoji+" **("+str(usersLst.count("\n"))+")**", value=usersLst, inline=True)
         updateEmbedVar.add_field(name="** **", value=footer_embed, inline=False)
         updateEmbedVar.set_footer(text="developped by R.L. / Simplon 2020 | Le sondage sera cloturé le {0}.".format(dateYMD+' à '+dateHMS))
@@ -136,7 +136,7 @@ async def sondage(ctx, question=None, description="Sondage", react='', limitReac
     await react_message.edit(embed=await makeEmbedPoll())
 
     def checkReact(reaction, user):
-      return user.bot == False and (str(reaction.emoji) in reactions or limitReact.upper() == "NON")
+      return user.bot == False and (str(reaction.emoji) in reactions or limitReact.lower() == "non")
 
     pollOpen = True
     while pollOpen == True:

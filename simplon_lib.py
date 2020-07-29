@@ -5,8 +5,8 @@
 #Language: Python
 #Fonctions diverses
 
-import datetime, time
-
+import datetime, time, pytz
+fr = pytz.timezone('Europe/Paris')
 ##Retourne uniquement les liste des Apprenants par leur Roles
 def getStudents(students):
     students_new = []
@@ -39,9 +39,9 @@ def getEmojiByIndex(index):
 ##Retourne la différence entre 2 dates en secondes
 async def isDateExpired(dateS):
     datetimeFormat = '%d-%m-%Y %H:%M:%S'
-    dateStart = datetime.datetime.now()
+    dateStart = datetime.datetime.now(fr).strftime(datetimeFormat)
     dateEnd = dateS
-    time_dif = datetime.datetime.strptime(dateEnd,datetimeFormat) - dateStart
+    time_dif = datetime.datetime.strptime(dateEnd,datetimeFormat) - datetime.datetime.strptime(dateStart, datetimeFormat)
     time_sec = int(time_dif.total_seconds())
     return time_sec
 
@@ -54,9 +54,12 @@ async def checkDateTime(bot, ctx, checkDate=False, checkTime=False):
         msg = await bot.wait_for('message', check=pred)
         await msg.delete()
         try:
-            datetime.datetime.strptime(msg.content, '%d-%m-%Y')
+            msg_reply = msg.content
+            if msg_reply.lower() == "pass":
+                msg_reply = datetime.datetime.today().strftime("%d-%m-%Y")
+            datetime.datetime.strptime(msg_reply, '%d-%m-%Y')
             await message.delete()
-            return msg.content
+            return msg_reply
         except ValueError:
             err = await ctx.author.send(":x: Format de date invalide, Format autorisé **ex: JJ-MM-AAAA**")
             return await checkDateTime(bot,ctx, True)
@@ -65,9 +68,12 @@ async def checkDateTime(bot, ctx, checkDate=False, checkTime=False):
         msg = await bot.wait_for('message', check=pred)
         await msg.delete()
         try:
-            datetime.datetime.strptime(msg.content, '%H:%M')
+            msg_reply = msg.content
+            if msg_reply.lower() == "pass":
+                msg_reply = (datetime.datetime.now(fr)+datetime.timedelta(hours=1)).strftime("%H:%M")
+            datetime.datetime.strptime(msg_reply, '%H:%M')
             await message.delete()
-            return msg.content+':00'
+            return msg_reply+':00'
         except ValueError:
             err = await ctx.author.send(":x: Format d'Heure invalide, Format autorisé **ex: HH:MM**")
             return await checkDateTime(bot, ctx, False, True)
