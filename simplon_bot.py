@@ -121,12 +121,11 @@ async def sondage(ctx, question=None, description="Sondage", react='', limitReac
         updateEmbedVar.add_field(name="**:busts_in_silhouette: Participation(s)**", value=user_react_data["total_user"], inline=True)
         updateEmbedVar.add_field(name=(":lock:" if timerExpire <= 0 else ":unlock:")+" **Etat**", value=("Fermé" if timerExpire <= 0 else "Ouvert"), inline=True)
         for reaction in user_react_data["user_react"]:
-            userLst = "\u200b"
+            usersLst = "\u200b"
             users = await reaction.users().flatten()
-            users = [u for u in users if not u.bot]
-            userLst += ("<@"+str(user.id)+">\n")
+            usersLst += '\n'.join(["<@"+str(u.id)+">\n" for u in users if not u.bot])
             if reaction.emoji in reactions or limitReact.upper() == "NON":
-                updateEmbedVar.add_field(name=reaction.emoji+" **("+str(userLst.count("\n"))+")**", value=userLst, inline=True)
+                updateEmbedVar.add_field(name=reaction.emoji+" **("+str(usersLst.count("\n"))+")**", value=usersLst, inline=True)
         updateEmbedVar.add_field(name="** **", value=footer_embed, inline=False)
         updateEmbedVar.set_footer(text="developped by R.L. / Simplon 2020 | Le sondage sera cloturé le {0}.".format(dateYMD+' à '+dateHMS))
         return updateEmbedVar
