@@ -58,7 +58,7 @@ async def random_student(ctx):
 
 ##Commande du bot pour faire une recherche rapide sur un sujet de veille demandé
 @bot.command(name='s_veille')
-async def test(ctx, keyword):
+async def veille(ctx, keyword):
     waiting_msg = await ctx.send("Recherche en cour... :face_with_monocle: ["+keyword+"]")
     embedVar = discord.Embed(title="Sujet de veille: \""+keyword+"\"", description="Recherche rapide des liens en rapport avec le sujet de Veille", url=f"https://simplonline.co", color=0xdf0000)
     embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
@@ -87,6 +87,7 @@ async def sondage(ctx, question=None, description="Sondage", react='', limitReac
         await ctx.author.send("Certains emojis séléctionnés ne sont pas compatible, elles n'apparaitrons pas.\nSi vous n'avez pas activé la limitation d'Emoji vous pouvez la rajouter manuellement après la création du Sondage.")
     await ctx.message.delete()
 
+    author_name = (ctx.message.author.name if not ctx.message.author.nick else ctx.message.author.nick)
     dateYMD = await sl.checkDateTime(bot, ctx, True)
     dateHMS = await sl.checkDateTime(bot, ctx, False, True)
     timerExpire = await sl.isDateExpired(dateYMD+' '+dateHMS)
@@ -95,28 +96,45 @@ async def sondage(ctx, question=None, description="Sondage", react='', limitReac
         dateYMD = await sl.checkDateTime(bot, ctx, True)
         dateHMS = await sl.checkDateTime(bot, ctx, False, True)
 
-    async def getReactUsers(init=False):
-        author_name = ctx.message.author.name if not ctx.message.author.nick else ctx.message.author.nick
-        updateEmbedVar = discord.Embed(title="**"+question+"**", description=description+"\nAuteur: "+ author_name, url=f"https://simplonline.co", color=0xdf0000)
-        updateEmbedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
-        updateEmbedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
-        if not init:
+    ## On créer la fonction qui permet de recuperer le nombre de reaction total & l'objet Reaction qui contient les data d'user pour chaque reactions
+    async def getUsersReact():
+        user_react = {"total_user": 0, "user_react":[]}
+        try:
             cache_msg = discord.utils.get(bot.cached_messages, id=react_message.id)
             for reaction in cache_msg.reactions:
-                userLst = "\u200b"
-                async for user in reaction.users():
-                    if user.bot == False:
-                        userLst += ("<@"+str(user.id)+">\n")
-                if reaction.emoji in reactions or limitReact.upper() == "NON":
-                    updateEmbedVar.add_field(name="Votes **"+reaction.emoji+"** ("+str(userLst.count("\n"))+")", value=userLst, inline=True)
+                users = await reaction.users().flatten()
+                users = [u for u in users if not u.bot]
+                user_react["total_user"] += len(users)
+                user_react["user_react"].append(reaction)
+            return user_react
+        except NameError:
+            return user_react
+
+    ## On créer la fonction qui permet de créer/mettre a jour l'embed du sondage
+    async def makeEmbedPoll():
+        user_react_data = await getUsersReact()
+        timerExpire = await sl.isDateExpired(dateYMD+' '+dateHMS)
+        updateEmbedVar = discord.Embed(title="**"+question+"**", description=description, url=f"https://simplonline.co", color=0xdf0000)
+        updateEmbedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        updateEmbedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
+        updateEmbedVar.add_field(name="**:speaking_head: Auteur**", value=author_name, inline=True)
+        updateEmbedVar.add_field(name="**:busts_in_silhouette: Participation(s)**", value=user_react_data["total_user"], inline=True)
+        updateEmbedVar.add_field(name=(":lock:" if timerExpire <= 0 else ":unlock:")+" **Etat**", value=("Fermé" if timerExpire <= 0 else "Ouvert"), inline=True)
+        for reaction in user_react_data["user_react"]:
+            userLst = "\u200b"
+            users = await reaction.users().flatten()
+            users = [u for u in users if not u.bot]
+            userLst += ("<@"+str(user.id)+">\n")
+            if reaction.emoji in reactions or limitReact.upper() == "NON":
+                updateEmbedVar.add_field(name=reaction.emoji+" **("+str(userLst.count("\n"))+")**", value=userLst, inline=True)
         updateEmbedVar.add_field(name="** **", value=footer_embed, inline=False)
         updateEmbedVar.set_footer(text="developped by R.L. / Simplon 2020 | Le sondage sera cloturé le {0}.".format(dateYMD+' à '+dateHMS))
         return updateEmbedVar
 
-    react_message = await ctx.send(embed=await getReactUsers(True))
+    react_message = await ctx.send(embed=await makeEmbedPoll())
     for reaction in reactions:
         await react_message.add_reaction(reaction)
-    await react_message.edit(embed=await getReactUsers())
+    await react_message.edit(embed=await makeEmbedPoll())
 
     def checkReact(reaction, user):
       return user.bot == False and (str(reaction.emoji) in reactions or limitReact.upper() == "NON")
@@ -129,12 +147,10 @@ async def sondage(ctx, question=None, description="Sondage", react='', limitReac
 
             for task in done_tasks:
                 reaction, user = await task
-                await react_message.edit(embed=await getReactUsers())
+                await react_message.edit(embed=await makeEmbedPoll())
         except asyncio.TimeoutError:
-           # await ctx.send('Poll fermé!')
+           await react_message.edit(embed=await makeEmbedPoll())
            pollOpen = False
-
-
 
 ##Si la commande entré par l'utilisateur n'existe pas, on anticipe l'erreur
 @bot.event
