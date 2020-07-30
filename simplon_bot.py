@@ -72,7 +72,7 @@ async def veille(ctx, keyword):
 
 ##Commande du bot pour lancé un nouveau Sondage avec parametre (Question, Smileys, Temps en Heure)
 @bot.command(name='s_sondage')
-async def sondage(ctx, question=None, description="Sondage", react='', limitReact="non"):
+async def sondage(ctx, question=None, description="Sondage Rapide", react='', limitReact="non"):
     reactions = ''.join(c for c in react if c in emoji.UNICODE_EMOJI)
     if question == None:
         await ctx.author.send("Vous devez donner un intitulé a votre sondage.")
@@ -91,7 +91,7 @@ async def sondage(ctx, question=None, description="Sondage", react='', limitReac
     dateYMD = await sl.checkDateTime(bot, ctx, True)
     dateHMS = await sl.checkDateTime(bot, ctx, False, True)
     timerExpire = await sl.isDateExpired(dateYMD+' '+dateHMS)
-    if (True if timerExpire < 0 else False):
+    while (True if timerExpire < 0 else False):
         await ctx.author.send(":x: La Date est expiré. Veuillez saisir une date valide.")
         dateYMD = await sl.checkDateTime(bot, ctx, True)
         dateHMS = await sl.checkDateTime(bot, ctx, False, True)
@@ -127,7 +127,7 @@ async def sondage(ctx, question=None, description="Sondage", react='', limitReac
             if reaction.emoji in reactions or limitReact.lower() == "non":
                 updateEmbedVar.add_field(name=reaction.emoji+" **("+str(usersLst.count("\n"))+")**", value=usersLst, inline=True)
         updateEmbedVar.add_field(name="** **", value=footer_embed, inline=False)
-        updateEmbedVar.set_footer(text="developped by R.L. / Simplon 2020 | Le sondage sera cloturé le {0}.".format(dateYMD+' à '+dateHMS))
+        updateEmbedVar.set_footer(text="developped by R.L. / Simplon 2020 | Le sondage sera cloturé le {0}.".format(dateYMD+' à '+dateHMS[:-3]))
         return updateEmbedVar
 
     react_message = await ctx.send(embed=await makeEmbedPoll())

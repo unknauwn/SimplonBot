@@ -50,7 +50,7 @@ async def checkDateTime(bot, ctx, checkDate=False, checkTime=False):
     def pred(m):
         return m.author == ctx.message.author and m.channel == ctx.message.channel
     if checkDate:
-        message = await ctx.send("{0}\nEntrez une Date de fin(**ex: JJ-MM-AAAA**): ".format(ctx.message.author.mention))
+        message = await ctx.send("{0}\n:calendar: Entrez une Date de fin(**ex: JJ-MM-AAAA**): \n**pass** *pour la date du jour par defaut*".format(ctx.message.author.mention))
         msg = await bot.wait_for('message', check=pred)
         await msg.delete()
         try:
@@ -62,9 +62,10 @@ async def checkDateTime(bot, ctx, checkDate=False, checkTime=False):
             return msg_reply
         except ValueError:
             err = await ctx.author.send(":x: Format de date invalide, Format autorisé **ex: JJ-MM-AAAA**")
+            await message.delete()
             return await checkDateTime(bot,ctx, True)
     if checkTime:
-        message = await ctx.send("{0}\nEntrez une Heure de fin(**ex: HH:MM**): ".format(ctx.message.author.mention))
+        message = await ctx.send("{0}\n:clock1: Entrez une Heure de fin(**ex: HH:MM**): \n**pass** *pour l'heure actuelle +1 par defaut*".format(ctx.message.author.mention))
         msg = await bot.wait_for('message', check=pred)
         await msg.delete()
         try:
@@ -76,4 +77,5 @@ async def checkDateTime(bot, ctx, checkDate=False, checkTime=False):
             return msg_reply+':00'
         except ValueError:
             err = await ctx.author.send(":x: Format d'Heure invalide, Format autorisé **ex: HH:MM**")
+            await message.delete()
             return await checkDateTime(bot, ctx, False, True)
