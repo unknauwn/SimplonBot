@@ -125,7 +125,7 @@ async def sondage(ctx, question=None, description="Sondage Rapide\nRéagissez av
             users = await reaction.users().flatten()
             usersLst += '\n'.join(["<@"+str(u.id)+">" for u in users if not u.bot])
             if reaction.emoji in reactions or limitReact.lower() == "non":
-                updateEmbedVar.add_field(name=reaction.emoji+" **("+str(usersLst.count("\n"))+")**", value=usersLst, inline=True)
+                updateEmbedVar.add_field(name=reaction.emoji+" **("+str(usersLst.count("\n")+1)+")**", value=usersLst, inline=True)
         updateEmbedVar.add_field(name="** **", value=footer_embed, inline=False)
         updateEmbedVar.set_footer(text="developped by R.L. / Simplon 2020 | Le sondage sera cloturé le {0}.".format(dateYMD+' à '+dateHMS[:-3]))
         return updateEmbedVar
