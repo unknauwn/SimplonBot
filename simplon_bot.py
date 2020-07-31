@@ -72,7 +72,7 @@ async def veille(ctx, keyword):
 
 ##Commande du bot pour lancé un nouveau Sondage avec parametre (Question, Smileys, Temps en Heure)
 @bot.command(name='s_sondage')
-async def sondage(ctx, question=None, description="Sondage Rapide", react='', limitReact="non"):
+async def sondage(ctx, question=None, description="Sondage Rapide\nRéagissez avec des Emoji's cohérent.", react='', limitReact="non"):
     reactions = ''.join(c for c in react if c in emoji.UNICODE_EMOJI)
     if question == None:
         await ctx.author.send("Vous devez donner un intitulé a votre sondage.")
@@ -123,7 +123,7 @@ async def sondage(ctx, question=None, description="Sondage Rapide", react='', li
         for reaction in user_react_data["user_react"]:
             usersLst = "\u200b"
             users = await reaction.users().flatten()
-            usersLst += '\n'.join(["<@"+str(u.id)+">\n" for u in users if not u.bot])
+            usersLst += '\n'.join(["<@"+str(u.id)+">" for u in users if not u.bot])
             if reaction.emoji in reactions or limitReact.lower() == "non":
                 updateEmbedVar.add_field(name=reaction.emoji+" **("+str(usersLst.count("\n"))+")**", value=usersLst, inline=True)
         updateEmbedVar.add_field(name="** **", value=footer_embed, inline=False)
