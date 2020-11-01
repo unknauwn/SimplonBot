@@ -9,13 +9,13 @@ from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 
 bot = commands.Bot(command_prefix='!')
-footer_embed = ':link: [Rejoingnez le Projet!](https://discord.gg/zgKJwGh) | Simplon#InCodeWeTrust'
+footer_embed = ':link: [Rejoignez le Projet!](https://discord.gg/zgKJwGh) | Simplon#InCodeWeTrust'
 
 ##Commande du bot qui affiche l'aide(les commandes)
 @bot.command(name='aide')
 async def aide(ctx):
-    bot_cmd = ('**!s_veille "RECHERCHE"** - Affiche les 5 premiers lien en rapport avec la recherche demandé\n'
-    '**!s_sondage "TITRE" "DESCRIPTION"** *(optionnel)* **"EMOJI"** *(optionnel)* **"OUI/NON"** *(optionnel, empeche les utilisateurs d\'ajouter de nouveaux Emoji)* - Créer un sondage avec le titre, la description & les emoji choisi\n'
+    bot_cmd = ('**!s_veille "RECHERCHE"** - Affiche les 5 premiers liens en rapport avec la recherche demandée\n'
+    '**!s_sondage "TITRE" "DESCRIPTION"** *(optionnel)* **"EMOJI"** *(optionnel)* **"OUI/NON"** *(optionnel, empêche les utilisateurs d\'ajouter de nouveaux Emoji)* - Créer un sondage avec le titre, la description & les emoji choisi\n'
     '**!s_places** - Génère les places de chaque apprenant aléatoirement.\n'
     '**!s_app** - Génère **UN** apprenant aléatoirement')
     embedVar = discord.Embed(title="Aide Bot Simplon:", description="Affichage des commandes pour l'utilisation du Bot Simplon", url=f"https://simplonline.co", color=0xdf0000)
@@ -32,7 +32,7 @@ async def aide(ctx):
 async def random_places(ctx):
     members = list(ctx.guild.members)
     random.shuffle(members)
-    embedVar = discord.Embed(title="Emplacements des Apprenants:", description="Tirage aux sort des places pour chaque apprenant", url=f"https://simplonline.co", color=0xdf0000)
+    embedVar = discord.Embed(title="Emplacements des Apprenants:", description="Tirage au sort des places pour chaque apprenant", url=f"https://simplonline.co", color=0xdf0000)
     embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
     embedVar.add_field(name="__Apprenants:__", value=sl.RandomStudentsPlaces(members), inline=False)
@@ -47,7 +47,7 @@ async def random_student(ctx):
     students = sl.getStudents(list(ctx.guild.members))
     random_student = random.choice(students)
     student_name = random_student.name if not random_student.nick else random_student.nick
-    embedVar = discord.Embed(title="Apprenants Aléatoire:", description="Tirage aux sort d'un apprenant", url=f"https://simplonline.co", color=0xdf0000)
+    embedVar = discord.Embed(title="Apprenants Aléatoire:", description="Tirage au sort d'un apprenant", url=f"https://simplonline.co", color=0xdf0000)
     embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
     embedVar.add_field(name="__Apprenant Séléctionné:__", value="**"+student_name+"**", inline=False)
