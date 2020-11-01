@@ -7,7 +7,7 @@
 
 import datetime, time, pytz
 fr = pytz.timezone('Europe/Paris')
-##Retourne uniquement les liste des Apprenants par leur Roles
+##Retourne uniquement les liste mélangée des Apprenants par leur Rôles
 def getStudents(students):
     students_new = []
     roleFilter = ["Admin_Test", "Apprenants"]
@@ -16,7 +16,7 @@ def getStudents(students):
             students_new.append(student)
     return students_new
 
-##Retourne une liste mélangé d'apprenants trié par ordre croissant avec affichage du N°
+##Retourne une liste mélangée d'apprenants triée par ordre croissant avec affichage du N°
 def RandomStudentsPlaces(students):
     students = getStudents(students)
     New_Students='';
