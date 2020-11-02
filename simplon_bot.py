@@ -8,7 +8,8 @@ import discord, os, random, emoji, nest_asyncio, asyncio, simplon_lib as sl, goo
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 
-bot = commands.Bot(command_prefix='!')
+intents = discord.Intents().all()
+bot = commands.Bot(command_prefix='!', intents=intents)
 footer_embed = ':link: [Rejoignez le Projet!](https://discord.gg/zgKJwGh) | Simplon#InCodeWeTrust'
 
 ##Commande du bot qui affiche l'aide(les commandes)
