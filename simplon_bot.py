@@ -67,7 +67,7 @@ async def random_student(ctx):
     students = sl.getStudents(list(ctx.guild.members))
     random_student = random.choice(students)
     student_name = random_student.name if not random_student.nick else random_student.nick
-    embedVar = discord.Embed(title="Apprenants Aléatoire:", description="Tirage au sort d'un apprenant", url=f"https://simplonline.co", color=0xdf0000)
+    embedVar = discord.Embed(title="Apprenant Aléatoire", description="Séléction aléatoire d'un apprenant", url=f"https://simplonline.co", color=0xdf0000)
     embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
     embedVar.add_field(name="__Apprenant Séléctionné:__", value="**"+student_name+"**", inline=False)
