@@ -18,12 +18,31 @@ async def aide(ctx):
     bot_cmd = ('**!s_veille "RECHERCHE"** - Affiche les 5 premiers liens en rapport avec la recherche demandée\n'
     '**!s_sondage "TITRE" "DESCRIPTION"** *(optionnel)* **"EMOJI"** *(optionnel)* **"OUI/NON"** *(optionnel, empêche les utilisateurs d\'ajouter de nouveaux Emoji)* - Créer un sondage avec le titre, la description & les emoji choisi\n'
     '**!s_places** - Génère les places de chaque apprenant aléatoirement.\n'
-    '**!s_app** - Génère **UN** apprenant aléatoirement')
+    '**!s_app** - Génère **UN** apprenant aléatoirement\n'
+    '**!s_rand "MIN" "MAX"** - Génère **UN** nombre aléatoirement entre le MIN et le MAX spécifié(Par defaut entre 1 et 5)\n'
+    '**!s_groupes "NUM_PAR_GROUPE"** - Génère des groupes aléatoires d\'apprenants(Par defaut 5 par groupe)')
     embedVar = discord.Embed(title="Aide Bot Simplon:", description="Affichage des commandes pour l'utilisation du Bot Simplon", url=f"https://simplonline.co", color=0xdf0000)
     embedVar.set_author(name="Simplon'Bot", icon_url=ctx.guild.icon_url)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
     embedVar.add_field(name="__Commandes:__", value=bot_cmd, inline=False)
     embedVar.add_field(name="\u200b", value=footer_embed, inline=False)
+    embedVar.set_footer(text="developped by R.L. / Simplon 2020")
+    await ctx.channel.send(embed=embedVar)
+    await ctx.message.delete()
+
+##Commande du bot pour faire un random
+@bot.command(name='s_rand')
+async def random_number(ctx, minnum = "1", maxnum="5"):
+    if minnum.isdecimal() == False or maxnum.isdecimal() == False:
+        await ctx.author.send(":x: Les valeurs doivent être des nombres entiers.")
+        await ctx.message.delete()
+        return
+    number = random.randint(int(minnum), int(maxnum))
+    embedVar = discord.Embed(title="Génération d'un nombre aléatoirement", description="Génére un nombre aléatoirement entre {} et {}:".format(minnum, maxnum), url=f"https://simplonline.co", color=0xdf0000)
+    embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
+    embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
+    embedVar.add_field(name="__Resultat:__", value=number, inline=False)
+    embedVar.add_field(name="** **", value=footer_embed, inline=False)
     embedVar.set_footer(text="developped by R.L. / Simplon 2020")
     await ctx.channel.send(embed=embedVar)
     await ctx.message.delete()
@@ -52,6 +71,26 @@ async def random_student(ctx):
     embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
     embedVar.add_field(name="__Apprenant Séléctionné:__", value="**"+student_name+"**", inline=False)
+    embedVar.add_field(name="** **", value=footer_embed, inline=False)
+    embedVar.set_footer(text="developped by R.L. / Simplon 2020")
+    await ctx.channel.send(embed=embedVar)
+    await ctx.message.delete()
+
+##Commande du bot qui lance une génération aléatoire de groupes d'apprenants
+@bot.command(name='s_groupes')
+async def random_groups(ctx, num_groups="4"):
+    if num_groups.isdecimal() == False:
+        await ctx.author.send(":x: Le nombre de groupe doit etre un nombre entier.")
+        await ctx.message.delete()
+        return
+    members = list(ctx.guild.members)
+    random.shuffle(members)
+    students_group = sl.RandomStudentsGroups(members, int(num_groups))
+    embedVar = discord.Embed(title="Liste des Groupes:", description="Génération aléatoire de groupe contenant {} d'apprenant(s)".format(num_groups), url=f"https://simplonline.co", color=0xdf0000)
+    embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
+    embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
+    for index, group in enumerate(students_group):
+        embedVar.add_field(name="__Groupes {}:__".format(index+1), value='\n'.join([sl.getEmojiByIndex((i+1)+index*int(num_groups))+' : **'+u.name+'**' for i, u in enumerate(group) if not u.bot]), inline=False)
     embedVar.add_field(name="** **", value=footer_embed, inline=False)
     embedVar.set_footer(text="developped by R.L. / Simplon 2020")
     await ctx.channel.send(embed=embedVar)

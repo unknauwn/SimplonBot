@@ -25,6 +25,11 @@ def RandomStudentsPlaces(students):
         New_Students += getEmojiByIndex(student+1)+' : **'+name+'**\n'
     return New_Students
 
+##Retourne une liste mélangée d'apprenants triée par ordre croissant avec affichage du N°
+def RandomStudentsGroups(students, max_groups):
+    students = getStudents(students)
+    return [students[i:i + max_groups] for i in range(1, len(students), max_groups)]
+
 ##Retourne la position (int) avec des emoji numeric de manière dynamique
 def getEmojiByIndex(index):
     Emo_Number = [":zero:", ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:"]
