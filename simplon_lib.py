@@ -28,7 +28,7 @@ def RandomStudentsPlaces(students):
 ##Retourne une liste mélangée d'apprenants triée par ordre croissant avec affichage du N°
 def RandomStudentsGroups(students, max_groups):
     students = getStudents(students)
-    return [students[i:i + max_groups] for i in range(1, len(students), max_groups)]
+    return [students[i:i + max_groups] for i in range(0, len(students), max_groups)]
 
 ##Retourne la position (int) avec des emoji numeric de manière dynamique
 def getEmojiByIndex(index):

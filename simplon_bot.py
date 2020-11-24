@@ -90,7 +90,7 @@ async def random_groups(ctx, num_groups="4"):
     embedVar.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon_url)
     embedVar.set_thumbnail(url="https://simplon.co/images/logo-simplon.png")
     for index, group in enumerate(students_group):
-        embedVar.add_field(name="__Groupes {}:__".format(index+1), value='\n'.join([sl.getEmojiByIndex((i+1)+index*int(num_groups))+' : **'+u.name+'**' for i, u in enumerate(group) if not u.bot]), inline=False)
+        embedVar.add_field(name="__Groupes {}:__".format(index+1), value='\n'.join([sl.getEmojiByIndex((i+1)+index*int(num_groups))+' : **'+(u.name if not u.nick else u.nick)+'**' for i, u in enumerate(group) if not u.bot]), inline=False)
     embedVar.add_field(name="** **", value=footer_embed, inline=False)
     embedVar.set_footer(text="developped by R.L. / Simplon 2020")
     await ctx.channel.send(embed=embedVar)
